@@ -3,6 +3,19 @@ import numpy as np
 from dateutil.relativedelta import relativedelta
 from shapely.geometry import Point
 
+
+def annual_highs(data):
+    annual_highs = pd.DataFrame()
+    for column in data.columns:
+        monthly_mean = data[column].groupby(data[column].index.month).mean()
+        lower_mean = calendar.month_abbr[monthly_mean.idxmin()+1].upper()
+        frequency = 'AS-'+lower_mean
+        series_highs = data[column].groupby(pd.Grouper(freq=frequency)).max().sort_index()
+        series_highs = series_highs[1:-1]
+        series_highs.index = series_highs.index.year
+        annual_highs = pd.concat([annual_highs,series_highs],axis=1)
+    return annual_highs
+
 def filtrar_estacoes(dados,n_anos=10,percent_falhas=5,janela_inicio=False,janela_fim=False):
     '''Seleciona as estações que tem pelo menos n_anos de dados entre a primeira e a última medição registrada;
        As estações selecionadas serão filtradas para um máximo de percent_falhas (0% a 100%) em um período de n_anos;
