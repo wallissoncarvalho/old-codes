@@ -1,0 +1,19 @@
+version: "3"
+
+
+services:
+  # THIS SAYS TO HAVE A SERVICE CALLED APP
+  app:
+    # SERVICE CONFIGURATION
+    build:
+      # SETTING CONTEXT TO THE CURRENT DIRECTORY
+      context: .
+    # PORT CONFIGURATION
+    ports:
+      - "8000:8000"
+    # ALLOWS REAL-TIME PROJECT UPDATE
+    volumes:
+      - ./app:/app
+    # COMMAND TO RUN THE DOCKER CONTAINER
+    command: >
+      sh -c "python manage.py runserver 0.0.0.0:8000"
